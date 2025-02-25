@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="he">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>תרגום ERD ל-RM</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        direction: rtl;
+        text-align: right;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 900px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        color: #333;
+      }
+      .box {
+        background: #e3e3e3;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+      code {
+        background: #ddd;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: monospace;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>תרגום ERD ל-RM</h1>
+      <p>
+        תרגום דיאגרמת ERD (Entity-Relationship Diagram) למודל רלציוני (RM -
+        Relational Model) הוא שלב קריטי בתכנון בסיס נתונים. תהליך זה ממיר את
+        הישויות, הקשרים והמאפיינים שלהם לטבלאות במודל הרלציוני.
+      </p>
+
+      <h2>שלבי התרגום</h2>
+      <div class="box">
+        <h3>1. תרגום ישויות (Entities)</h3>
+        <p>
+          ב-ERD, ישות (Entity) מייצגת אובייקט בעולם האמיתי עם מאפיינים מוגדרים.
+          במודל הרלציוני, כל ישות הופכת לטבלה.
+        </p>
+        <p><strong>חוקים:</strong></p>
+        <ul>
+          <li>שם הטבלה זהה לשם הישות.</li>
+          <li>העמודות בטבלה מייצגות את המאפיינים של הישות.</li>
+          <li>מפתח ראשי (Primary Key) נבחר כדי לזהות כל שורה באופן ייחודי.</li>
+        </ul>
+        <p><strong>דוגמה:</strong></p>
+        <code> Student(ID PRIMARY KEY, Name VARCHAR(100), Age INT) </code>
+      </div>
+
+      <div class="box">
+        <h3>2. תרגום ישויות חלשות (Weak Entities)</h3>
+        <p>
+          ישות חלשה היא ישות שאין לה מפתח ראשי עצמאי, ולכן היא תלויה בישות אחרת
+          לצורך הזיהוי.
+        </p>
+        <p><strong>חוקים:</strong></p>
+        <ul>
+          <li>טבלת הישויות החלשות כוללת את מפתח הישות התומכת כמפתח זר.</li>
+          <li>
+            המפתח הראשי של הישות החלשה מורכב ממפתח הישות התומכת יחד עם מזהה
+            ייחודי.
+          </li>
+        </ul>
+        <p><strong>דוגמה:</strong></p>
+        <code>
+          Dependents(Dep_ID, Student_ID (FK), Name VARCHAR(100), PRIMARY
+          KEY(Dep_ID, Student_ID))
+        </code>
+      </div>
+
+      <div class="box">
+        <h3>3. תרגום קשרים (Relationships)</h3>
+        <p>
+          קשרים ב-ERD מתארים יחסים בין ישויות. הם מתורגמים למפתחות זרים או
+          לטבלאות נוספות במודל הרלציוני.
+        </p>
+        <p><strong>סוגי קשרים:</strong></p>
+        <ul>
+          <li>
+            <strong>one-to-one:</strong> ניתן לאחד את הנתונים בטבלה אחת או
+            להוסיף מפתח זר בטבלה אחת.
+          </li>
+          <li>
+            <strong>one-to-many:</strong> מפתח הישות בצד ה-1 מועתק כעמודה בטבלה
+            של הצד-M.
+          </li>
+          <li>
+            <strong>many-to-many:</strong> יש צורך בטבלת קשר נוספת (Junction
+            Table) המכילה מפתחות זרים משתי הישויות.
+          </li>
+        </ul>
+        <p><strong>דוגמה לקשר many-to-many:</strong></p>
+        <code>
+          Students(ID PRIMARY KEY, Name VARCHAR(100)) Courses(Course_ID PRIMARY
+          KEY, Course_Name VARCHAR(100)) Enrollment(Student_ID (FK), Course_ID
+          (FK), Grade INT, PRIMARY KEY(Student_ID, Course_ID))
+        </code>
+      </div>
+
+      <div class="box">
+        <h3>4. תרגום הורשה (Inheritance)</h3>
+        <p>כאשר יש הורשה (Inheritance) בין ישויות, ישנן שלוש שיטות לתרגום:</p>
+        <ul>
+          <li>
+            <strong>Single Table Inheritance:</strong> כל המאפיינים מאוחסנים
+            בטבלה אחת עם עמודה המציינת את סוג הישות.
+          </li>
+          <li>
+            <strong>Class Table Inheritance:</strong> כל מחלקה נשמרת בטבלה נפרדת
+            עם קשרים לטבלת האב.
+          </li>
+          <li>
+            <strong>Concrete Table Inheritance:</strong> כל תת-ישות נשמרת בטבלה
+            משלה עם כל המאפיינים.
+          </li>
+        </ul>
+        <p><strong>דוגמה לשיטת Class Table Inheritance:</strong></p>
+        <code>
+          Person(ID PRIMARY KEY, Name VARCHAR(100)) Student(ID PRIMARY KEY, GPA
+          DECIMAL(3,2), FOREIGN KEY (ID) REFERENCES Person(ID)) Teacher(ID
+          PRIMARY KEY, Salary DECIMAL(10,2), FOREIGN KEY (ID) REFERENCES
+          Person(ID))
+        </code>
+      </div>
+    </div>
+  </body>
+</html>

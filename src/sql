@@ -1,0 +1,41 @@
+--2024A 3.1--
+
+select a.cname,a.year
+from (select cname, year, count(*) subcount from Submissions
+group by cname, year) A,
+(select cname, year, count(*) prescount from Presentations
+group by cname, year) B
+where a.cname=b.cname and a.year=b.year
+and (subcount/prescount)=
+    (select min(subcount/prescount) 
+    from (select cname, year, count(*) subcount from Submissions
+    group by cname, year) A,
+    (select cname, year, count(*) prescount from Presentations
+    group by cname, year) B
+    where a.cname=b.cname and a.year=b.year);
+	
+
+--2024A 3.2--
+
+CREATE OR REPLACE FUNCTION test(authorin articles.aname%type,cnamein Submissions.cname%type,yearin Submissions.year%type)
+   RETURN NUMBER AS
+   countaname NUMBER;
+   countaut NUMBER;
+   
+   BEGIN
+        select count(a.aname) into countaname from presentations p,articles a
+		where p.aname=a.aname and p.year=yearin and p.cname=cnamein and a.author=authorin;
+
+		if countaname>0 THEN
+			select count ( author) into countaut from articles where aname in
+			(select a.aname from presentations p,articles a
+			where p.aname=a.aname and p.year=yearin and p.cname=cnamein and a.author=authorin);
+            return countaut-countaname;
+        end if;
+	
+	EXCEPTION
+		when no_data_found then
+			dbms_output.put_line('error no articles found');
+            return 0;
+end;
+/

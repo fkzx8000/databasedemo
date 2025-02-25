@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>מדריך הרחבה למערכת ERD</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.8;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        
+        .guide-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+        
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        
+        h3 {
+            color: #16a085;
+            margin-top: 30px;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            tab-size: 4;
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffeeba;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>מדריך הרחבה מתקדם למערכת ERD</h1>
+
+    <div class="guide-section">
+        <h2>הרחבת סוגי אלמנטים</h2>
+        
+        <h3>הוספת הערות (Notes)</h3>
+        <pre><code>
+// הוספה ל-ElementType
+type ElementType = ... | "NOTE";
+
+// הרחבת הממשק
+interface DiagramElement {
+  noteColor?: string;
+  fontSize?: number;
+}
+
+// פונקציית יצירה
+const addNote = () => {
+  const newNote: DiagramElement = {
+    id: `NOTE_${Date.now()}`, 
+    type: "NOTE",
+    x: 100, y: 100,
+    width: 200, height: 100,
+    name: "הערה חדשה",
+    noteColor: "#ffffcc",
+    fontSize: 14
+  };
+  setElements(prev => [...prev, newNote]);
+};
+        </code></pre>
+    </div>
+
+    <div class="guide-section">
+        <h2>שיפור ניהול מצב</h2>
+        
+        <h3>שימוש ב-Zustand לניהול מורכב</h3>
+        <pre><code>
+import { create } from 'zustand';
+
+interface ERDState {
+  elements: DiagramElement[];
+  edges: Edge[];
+  //... פעולות ניהול
+}
+
+const useStore = create&lt;ERDState>((set) => ({
+  elements: [],
+  edges: [],
+  
+  addElement: (el) => set(state => ({
+    elements: [...state.elements, el]
+  })),
+  //...
+}));
+        </code></pre>
+    </div>
+
+    <div class="guide-section">
+        <h2>הוספת יכולות Undo/Redo</h2>
+        
+        <pre><code>
+class HistoryManager {
+  private stack: ERDState[] = [];
+  private currentIndex = -1;
+
+  push(state: ERDState) {
+    this.stack = this.stack.slice(0, this.currentIndex + 1);
+    this.stack.push(deepClone(state));
+    this.currentIndex++;
+  }
+
+  undo() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      return this.stack[this.currentIndex];
+    }
+    return null;
+  }
+}
+
+// שימוש בקומפוננטה
+const history = useRef(new HistoryManager());
+        </code></pre>
+    </div>
+
+    <div class="guide-section">
+        <h2>שיפורי UI/UX מתקדמים</h2>
+        
+        <h3>תפריט הקשר דינמי</h3>
+        <pre><code>
+const ContextMenu = ({ x, y, element }) => (
+  &lt;div style={{ 
+    position: 'absolute',
+    left: x,
+    top: y,
+    background: 'white',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+  }}>
+    &lt;button onClick={() => prompt('שם חדש:')}>
+      שנה שם
+    &lt;/button>
+    &lt;input 
+      type="color"
+      onChange={(e) => updateElement(element.id, { 
+        noteColor: e.target.value 
+      })}
+    />
+  &lt;/div>
+);
+        </code></pre>
+    </div>
+
+    <div class="note">
+        <strong>טיפ חשוב:</strong>
+        <p>לפני הוספת פיצ'רים חדשים:
+        <ul>
+            <li>✅ בדוק התנגשויות עם קוד קיים</li>
+            <li>✅ כתוב בדיקות יחידה</li>
+            <li>✅ תעד את השינויים</li>
+        </ul>
+        </p>
+    </div>
+
+    <div class="warning">
+        <strong>אזהרה:</strong>
+        <p>הימנע משימוש ב-magic numbers - השתמש בקונסטנטים עם שמות משמעותיים</p>
+    </div>
+
+    <div class="guide-section">
+        <h2>ארכיטקטורת Plugins</h2>
+        
+        <pre><code>
+type Plugin = {
+  id: string;
+  onElementCreate?: (el: DiagramElement) => void;
+  renderToolbarButton?: () => React.ReactNode;
+};
+
+class PluginManager {
+  private plugins: Plugin[] = [];
+
+  register(plugin: Plugin) {
+    this.plugins.push(plugin);
+  }
+}
+
+// דוגמת Plugin
+const autoLayoutPlugin = {
+  id: 'auto-layout',
+  renderToolbarButton: () => (
+    &lt;button onClick={applyAutoLayout}>
+      סידור אוטומטי
+    &lt;/button>
+  )
+};
+        </code></pre>
+    </div>
+
+</body>
+</html>

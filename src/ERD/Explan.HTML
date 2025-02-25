@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+  <head>
+    <meta charset="UTF-8" />
+    <title>הסבר קומפוננטות ERD</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        line-height: 1.6;
+      }
+      .component {
+        background: #f5f5f5;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 8px;
+      }
+      h2 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 5px;
+      }
+      code {
+        background: #e0e0e0;
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>הסבר קומפוננטות ERD</h1>
+
+    <div class="component">
+      <h2>סוגי נתונים (Type Definitions)</h2>
+      <p>
+        <code>ElementType</code> - מגדיר את סוגי האלמנטים האפשריים בדיאגרמה:
+        ישות, קשר, תכונה וירושה.
+      </p>
+      <p>
+        <code>DiagramElement</code> - ממשק שמגדיר את המבנה של כל אלמנט בדיאגרמה,
+        כולל מיקום, גודל, סוג ותכונות נוספות לפי סוג האלמנט.
+      </p>
+      <p>
+        <code>Edge</code> - ממשק שמגדיר חיבור בין שני אלמנטים, כולל קרדינליות
+        וכיווניות.
+      </p>
+    </div>
+
+    <div class="component">
+      <h2>מצבים (States)</h2>
+      <p><code>elements</code> - מערך שמכיל את כל האלמנטים בדיאגרמה.</p>
+      <p><code>edges</code> - מערך שמכיל את כל החיבורים בין האלמנטים.</p>
+      <p><code>draggingId</code> - מזהה האלמנט שנמצא בתהליך גרירה.</p>
+      <p><code>connectMode</code> - מצב חיבור בין אלמנטים.</p>
+      <p><code>weakRelOption</code> - הגדרה אם ליצור קשר חלש.</p>
+    </div>
+
+    <div class="component">
+      <h2>פונקציות עיקריות</h2>
+      <h3>הוספת אלמנטים</h3>
+      <p>
+        <code>addEntity()</code> - יוצרת ישות חדשה עם מיקום ותכונות ברירת מחדל.
+      </p>
+      <p><code>addRelationship()</code> - יוצרת קשר חדש בצורת מעוין.</p>
+      <p><code>addAttribute()</code> - מוסיפה תכונה המשויכת לישות נבחרת.</p>
+      <p><code>addInheritance()</code> - יוצרת קשר ירושה בצורת משולש.</p>
+
+      <h3>ניהול מצב</h3>
+      <p><code>saveDiagram()</code> - שומרת את המצב הנוכחי ב-localStorage.</p>
+      <p><code>loadDiagram()</code> - טוענת דיאגרמה שמורה מ-localStorage.</p>
+      <p><code>translateToRM()</code> - מתרגמת את הדיאגרמה למודל יחסי.</p>
+
+      <h3>אינטראקציות משתמש</h3>
+      <p>
+        <code>createConnection()</code> - יוצרת חיבור בין שני אלמנטים עם בדיקות
+        תקינות.
+      </p>
+      <p>
+        <code>onElementMouseDown()</code> - מטפלת בלחיצה על אלמנט להתחלת גרירה
+        או חיבור.
+      </p>
+      <p><code>onMouseMove()</code> - מעדכן מיקום אלמנט בזמן גרירה.</p>
+      <p>
+        <code>removeElement()</code> - מסירה אלמנט ואת כל החיבורים המשויכים
+        אליו.
+      </p>
+    </div>
+
+    <div class="component">
+      <h2>רנדור ויזואלי</h2>
+      <p>הקומפוננטה משתמשת ב-SVG לרינדור הגרפי:</p>
+      <ul>
+        <li>ישות: מלבן עם קו מקווקו לישות חלשה</li>
+        <li>קשר: מעוין עם צבע שונה לקשרים חלשים</li>
+        <li>תכונה: עיגול עם קו מתאר</li>
+        <li>ירושה: משולש עם צבע סגול</li>
+        <li>חיבורים: קווים עם תוויות קרדינליות וחצים</li>
+      </ul>
+      <p>כל אלמנט כולל כפתור 'X' למחיקה וניתן לשינוי שם בלחיצה כפולה.</p>
+    </div>
+
+    <div class="component">
+      <h2>מנגנוני הגנה</h2>
+      <ul>
+        <li>בדיקת חפיפת אלמנטים בזמן גרירה</li>
+        <li>מניעת חיבורים לא חוקיים (למשל ישות לישות)</li>
+        <li>אישורים למחיקת אלמנטים</li>
+        <li>שמירה אוטומטית של מצב הדיאגרמה</li>
+      </ul>
+    </div>
+
+    <div class="component">
+      <h2>תכונות מתקדמות</h2>
+      <ul>
+        <li>גרירה עם הגבלת חפיפה</li>
+        <li>מצב חיבור אינטראקטיבי</li>
+        <li>תמיכה בקשרים חלשים</li>
+        <li>ניהול קרדינליות דינמי</li>
+        <li>תרגום אוטומטי למודל יחסי</li>
+      </ul>
+    </div>
+  </body>
+</html>

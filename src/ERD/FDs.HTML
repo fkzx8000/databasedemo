@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="he">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Functional Dependencies (FDs)</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        direction: rtl;
+        text-align: right;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 900px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2,
+      h3 {
+        color: #333;
+      }
+      .box {
+        background: #e3e3e3;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+      code {
+        background: #ddd;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: monospace;
+        display: block;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Functional Dependencies (FDs) - תלות פונקציונלית</h1>
+      <p>
+        תלות פונקציונלית היא קשר בין מאפיינים בטבלה, המתאר כיצד ערך של עמודה אחת
+        קובע באופן ייחודי את הערך של עמודה אחרת.
+      </p>
+
+      <h2>1. הגדרה של תלות פונקציונלית</h2>
+      <p>
+        אם עבור כל זוג רשומות בטבלה מתקיים כי כאשר הערכים של קבוצה מסוימת של
+        עמודות שווים, אז גם הערכים של עמודה אחרת שווים – אזי קיימת תלות
+        פונקציונלית.
+      </p>
+      <p>נסמן זאת כך:</p>
+      <p>
+        \( X \to Y \) – אם לכל שני tuples עם אותו ערך של \( X \), יהיה להם גם
+        אותו ערך של \( Y \).
+      </p>
+
+      <h2>2. סוגי תלויות פונקציונליות</h2>
+      <div class="box">
+        <h3>2.1 תלות טריוויאלית</h3>
+        <p>
+          תלות פונקציונלית היא טריוויאלית אם \( Y \) הוא תת-קבוצה של \( X \),
+          כלומר:
+        </p>
+        <p>\( X \to Y \) כאשר \( Y \subseteq X \).</p>
+      </div>
+      <div class="box">
+        <h3>2.2 תלות לא טריוויאלית</h3>
+        <p>תלות פונקציונלית היא לא טריוויאלית אם \( Y \) אינו חלק מ-\( X \).</p>
+      </div>
+
+      <h2>3. דוגמאות</h2>
+      <table>
+        <tr>
+          <th>Student_ID</th>
+          <th>Name</th>
+          <th>Birthdate</th>
+          <th>Major</th>
+        </tr>
+        <tr>
+          <td>101</td>
+          <td>יוסי כהן</td>
+          <td>01/01/2000</td>
+          <td>מדעי המחשב</td>
+        </tr>
+        <tr>
+          <td>102</td>
+          <td>איילת לוי</td>
+          <td>15/06/2001</td>
+          <td>הנדסת חשמל</td>
+        </tr>
+      </table>
+      <p>בתלות פונקציונלית:</p>
+      <p>\( Student\_ID \to Name, Birthdate, Major \)</p>
+      <p>כלומר, מזהה הסטודנט קובע באופן ייחודי את שמו, תאריך לידתו ומגמתו.</p>
+
+      <h2>4. חוקי התלויות הפונקציונליות</h2>
+      <ul>
+        <li>
+          <strong>חוק ההעתקה:</strong> אם \( X \to Y \), אז \( X \cup Z \to Y
+          \cup Z \).
+        </li>
+        <li>
+          <strong>חוק הפיצול:</strong> אם \( X \to Y,Z \), אז \( X \to Y \) וגם
+          \( X \to Z \).
+        </li>
+        <li>
+          <strong>חוק טרנזטיביות:</strong> אם \( X \to Y \) ו- \( Y \to Z \), אז
+          \( X \to Z \).
+        </li>
+      </ul>
+
+      <h2>5. השפעת התלות הפונקציונלית על נרמול</h2>
+      <p>
+        תלות פונקציונלית היא הבסיס לתהליך הנרמול, המשמש להפחתת כפילויות ולשיפור
+        תקינות הנתונים במודל הרלציוני.
+      </p>
+      <p>
+        לדוגמה, אם יש תלות פונקציונלית חלקית, יתכן שנרצה לפרק את הטבלה כדי לשפר
+        את תקינות הנתונים.
+      </p>
+
+      <h2>6. מפתח ראשי ותלות פונקציונלית</h2>
+      <p>
+        בבסיס הנתונים, מפתח ראשי הוא קבוצה מינימלית של מאפיינים שיכולה לקבוע
+        באופן ייחודי את כל שאר המאפיינים בטבלה.
+      </p>
+      <p>\( K \) הוא מפתח אם:</p>
+      <p>
+        \( K \to All\ Attributes \) אך אף תת-קבוצה של \( K \) אינה יכולה לעשות
+        זאת.
+      </p>
+    </div>
+  </body>
+</html>
